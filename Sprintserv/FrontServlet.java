@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class FrontServlet extends HttpServlet {
     //attribut MappingUrls
-    HashMap<String,Mapping> MappingUrls = new HashMap<String,Mapping>();
+    HashMap<String,Mapping> MappingUrls;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
