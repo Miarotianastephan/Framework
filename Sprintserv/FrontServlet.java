@@ -4,8 +4,12 @@ import etu1846.framework.*;
 import javax.servlet.http.*;
 import javax.servlet.*;
 import java.io.*;
+import java.util.HashMap;
 
 public class FrontServlet extends HttpServlet {
+    //attribut MappingUrls
+    HashMap<String,Mapping> MappingUrls;
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
