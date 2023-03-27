@@ -59,7 +59,7 @@ public class ManageForAnnotation {
                 System.out.println("");
             }
 
-            else if(Class.forName(classLoc).isAnnotationPresent(Dao.class)){
+            if(Class.forName(classLoc).isAnnotationPresent(Dao.class)){
                 System.out.println("__Model__(" + Class.forName(classLoc).getSimpleName()+ ")-> Annotation: "+ Class.forName(classLoc).getAnnotation(Dao.class).dao());    
                 int fields = Class.forName(classLoc).getDeclaredFields().length;
                 for(int j=0; j < fields; j++){
@@ -72,7 +72,7 @@ public class ManageForAnnotation {
                     if( Class.forName(classLoc).getDeclaredMethods()[m].isAnnotationPresent(Url.class) ){
                         System.out.println("-->method " + Class.forName(classLoc).getDeclaredMethods()[m].getName()+"__> Annotation: "+ Class.forName(classLoc).getDeclaredMethods()[m].getAnnotation(Url.class).url_name());
                         Mapping mapping = new Mapping(classLoc,Class.forName(classLoc).getDeclaredMethods()[m].getName());//insert mappingclass 
-                        MappingUrls.put(Class.forName(classLoc).getDeclaredMethods()[m].getAnnotation(Url.class).url_name()+m, mapping);
+                        MappingUrls.put(Class.forName(classLoc).getDeclaredMethods()[m].getAnnotation(Url.class).url_name(), mapping);
                     }
                 } 
                 System.out.println("");
