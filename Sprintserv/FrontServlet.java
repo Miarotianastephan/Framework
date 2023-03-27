@@ -25,6 +25,7 @@ public class FrontServlet extends HttpServlet {
         out.println("Servlet path "+spath+"</br>");
 
         // </HashMAPPING>
+        // get all of annoted method
         MappingUrls = ut.get_Annoted_Methods(MappingUrls, context);
         ut.printHash(MappingUrls,out);
         
