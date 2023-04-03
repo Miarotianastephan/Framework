@@ -14,4 +14,11 @@ public class Employe{
     public void find_emp(){
         System.out.println("You get the first method");
     }
+
+    @Url(url_name = "go_view_index")
+    public ModelView m_view_emp(){
+        System.out.println("You get the method with model view");
+        ModelView m_view = new ModelView("index.jsp");
+        return m_view;
+    }
 }
