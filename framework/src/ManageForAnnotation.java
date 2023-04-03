@@ -20,13 +20,13 @@ public class ManageForAnnotation {
 
     public ManageForAnnotation(){
 
-        Employe e = new Employe();
-        Dept de = new Dept();
-        DeptDAO deptdao = new DeptDAO();
+        // Employe e = new Employe();
+        // Dept de = new Dept();
+        // DeptDAO deptdao = new DeptDAO();
 
-        listObjet.add(e);
-        listObjet.add(de);
-        listObjet.add(deptdao);
+        // listObjet.add(e);
+        // listObjet.add(de);
+        // listObjet.add(deptdao);
 
     }
 
