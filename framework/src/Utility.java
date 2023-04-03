@@ -11,7 +11,12 @@ public class Utility {
         return request.getServletPath();
     }
     public String printQuery(HttpServletRequest request)throws ServletException{
-        return request.getQueryString();
+        String queryString = request.getQueryString();
+        // remove the leading slash
+        if (queryString.startsWith("/")) {
+            queryString = queryString.substring(1);
+        }
+        return queryString;
     }
     // --- Fonction: avoir tout les classes avec ses methodes annotées 
     public HashMap<String,Mapping> get_Annoted_Methods(HashMap<String,Mapping> MappingUrls, ServletContext context)throws Exception{
