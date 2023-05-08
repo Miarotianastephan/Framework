@@ -18,17 +18,7 @@ import etu1846.framework.annotation.*;
 public class ManageForAnnotation {
     ArrayList<Object> listObjet = new ArrayList<Object>();
 
-    public ManageForAnnotation(){
-
-        // Employe e = new Employe();
-        // Dept de = new Dept();
-        // DeptDAO deptdao = new DeptDAO();
-
-        // listObjet.add(e);
-        // listObjet.add(de);
-        // listObjet.add(deptdao);
-
-    }
+    public ManageForAnnotation(){}
 
     public HashMap<String,Mapping> checkForAnnotation(String packageName,HashMap<String,Mapping> MappingUrls) throws Exception{
         ArrayList<String> listClass = new ArrayList<>();
