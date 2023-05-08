@@ -8,4 +8,17 @@ public class DeptDAO{
 
     public DeptDAO(int id, String dnamedao){}
     public DeptDAO(){}
+    
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getDeptNameDAO() {
+        return deptNameDAO;
+    }
+    public void setDeptNameDAO(String deptNameDAO) {
+        this.deptNameDAO = deptNameDAO;
+    }
 }

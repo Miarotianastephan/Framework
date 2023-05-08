@@ -22,24 +22,26 @@ public class FrontServlet extends HttpServlet {
         // </URL>
         String spath = ut.printRequestedPath(request);
         String qpath = ut.printQuery(request);
-        // out.println("Query String "+qpath+"</br>");
-        // out.println("Servlet path "+spath+"</br>");
+        out.println("Servlet path "+spath+"</br>");
+        out.println("Query String "+qpath+"</br>");
 
         // </HashMAPPING>
         MappingUrls = ut.get_Annoted_Methods(MappingUrls, context);
         ut.printHash(MappingUrls,out);
-
-        // verify the url if requesting the view 
-        if (MappingUrls.get(spath) != null){
-            Mapping map = MappingUrls.get(spath);
-            Object obj = new Object();
-            obj = Class.forName(map.getClassName()).newInstance();
-            Method meth = obj.getClass().getDeclaredMethod(map.getMethod());
-            
-            String redir = (meth.invoke(obj)).toString();
-            out.println("redir: " + redir);
-        }
         
+        //Setting the attribute of each class presenting a name of the attr
+        ut.saveAll(request, context);
+        // ---
+
+        // verify if the url is requesting the view
+        if (MappingUrls.get(spath) != null){
+            ModelView MV = ut.getModelViewWhenInvoke(MappingUrls,spath);
+            if( MV.getUrl() != null ){
+                ut.dispatchTo(request, response, MV);
+            }
+        }
+        // fin url redirect to view 
+
     }
 
     @Override

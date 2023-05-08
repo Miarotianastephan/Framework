@@ -14,21 +14,14 @@ import javax.servlet.*;
 import etu1846.framework.*;
 import java.util.HashMap;
 import etu1846.framework.annotation.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 
 public class ManageForAnnotation {
     ArrayList<Object> listObjet = new ArrayList<Object>();
 
-    public ManageForAnnotation(){
-
-        // Employe e = new Employe();
-        // Dept de = new Dept();
-        // DeptDAO deptdao = new DeptDAO();
-
-        // listObjet.add(e);
-        // listObjet.add(de);
-        // listObjet.add(deptdao);
-
-    }
+    public ManageForAnnotation(){}
 
     public HashMap<String,Mapping> checkForAnnotation(String packageName,HashMap<String,Mapping> MappingUrls) throws Exception{
         ArrayList<String> listClass = new ArrayList<>();
@@ -80,6 +73,22 @@ public class ManageForAnnotation {
         }
         return MappingUrls;
     }
+
+    public Class[] getAllClasses(String packageName) throws Exception{
+        ArrayList<String> listClass = new ArrayList<>();
+        // realPath of the the Class 'C:/tomcat/classes/pakcage_name'
+        listClass = this.getNameOfAllClass(packageName);
+        // must spliting by .classes. string and get the Class real package 'pakcage_name'
+        listClass = resplitPath(listClass);
+        Class[] rep  = new Class[listClass.size()];
+        // ----------------------------------------------------------------
+        for(int i=0; i < listClass.size(); i++){
+            String classLoc = listClass.get(i);
+            // rep[i] = Class.forName(classLoc).newInstance();
+            rep[i] = Class.forName(classLoc);
+        }
+        return rep;
+    }    
     
     public ArrayList<String> getNameOfAllClass(String directory) throws Exception{
         File folder = new File(directory);
@@ -130,6 +139,7 @@ public class ManageForAnnotation {
     public Class[] allClasses(String pathDirectoryOfPackage) throws Exception{
         ArrayList<String> tab = new ArrayList<String>();
         tab = this.getNameOfAllClass(pathDirectoryOfPackage);
+        tab = resplitPath(tab);
         Class[] classes = new Class[tab.size()];
         for(int i=0; i < classes.length; i++){
             classes[i] = Class.forName(tab.get(i)); 
@@ -137,4 +147,29 @@ public class ManageForAnnotation {
         return classes;
     }
     
+    public void traiteSave(Class ma_class,HttpServletRequest request) throws Exception{
+        Object temp_object_of_the_class = ma_class.newInstance();
+        System.out.println("Nom de ma classe :"+temp_object_of_the_class.getClass().getName());
+            Field[] listfield = ma_class.getDeclaredFields();
+            int fields = listfield.length;
+            // POUR CHAQUE CHAMP DU CLASS
+            for(int j=0; j < fields; j++){
+                if(listfield[j].isAnnotationPresent(field.class)){
+                    // izay field ihany no alaina ny method aminy 
+                    String nameOfAttribute = listfield[j].getAnnotation(field.class).val();
+                    System.out.println("->CHAMP " + listfield[j].getName()+ "___> Annotation: "+ nameOfAttribute);
+                    String valueOfAttribute = request.getParameter(nameOfAttribute);
+                    if( valueOfAttribute != null){
+                        // setting the attribute
+                        String methodToCall = "set".concat(nameOfAttribute);
+                        Method meth = temp_object_of_the_class.getClass().getDeclaredMethod(methodToCall , listfield[j].getType());
+                        meth.invoke(temp_object_of_the_class , valueOfAttribute);
+                        System.out.println("Your class " + ma_class.getName() + " has been updated the field "+listfield[j].getName());
+                    }else{
+                        System.out.println("no local change");
+                    }
+                    // ---
+                }
+            }
+    }
 }
