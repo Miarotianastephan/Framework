@@ -1,11 +1,17 @@
 package etu1846.framework;
 
+<<<<<<< HEAD
 // import etu1846.framework.annotation;
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.HashMap;
+<<<<<<< HEAD
 import java.lang.reflect.Field;
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 import java.lang.reflect.Method;
 import etu1846.framework.model.*;
 
@@ -87,6 +93,7 @@ public class Utility {
         return request;
     }
 
+<<<<<<< HEAD
     // sprint7
     public void saveAll(HttpServletRequest request, ServletContext context) throws Exception{
         Class[] classes = fillClass(context);
@@ -98,4 +105,6 @@ public class Utility {
         }
     }
 
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 }

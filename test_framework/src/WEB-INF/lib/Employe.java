@@ -20,6 +20,7 @@ public class Employe{
     @Url(url_name = "go_view_test_url")
     public ModelView m_view_emp(){
         System.out.println("You get the method with model view test");
+<<<<<<< HEAD
         ArrayList<Employe> my_list_emp = this.getListEmp();
         ModelView m_view = new ModelView("test_url.jsp");
         for (int i=0; i < my_list_emp.size(); i++) {
@@ -27,6 +28,14 @@ public class Employe{
             String temp_key = "empno".concat(Integer.toString(temp_emp.getId()));
             System.out.println("Key"+temp_key);
             m_view.addItem(temp_key, temp_emp);
+=======
+        ArrayList<String> my_list = this.getDataEmp();
+        ModelView m_view = new ModelView("test_url.jsp");
+        for (int i=0; i < my_list.size(); i++) {
+            String temp_key = "empno".concat(my_list.get(i));
+            System.out.println("Key"+temp_key);
+            m_view.addItem(temp_key, my_list.get(i));
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
         }
         return m_view;
     }
@@ -38,6 +47,7 @@ public class Employe{
         return m_view;
     }
 
+<<<<<<< HEAD
     @Url(url_name = "sender")
     public ModelView m_view_sender(){
         System.out.println("You get the method with model view sender");
@@ -45,6 +55,8 @@ public class Employe{
         return m_view;
     }
 
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
     public ArrayList<Employe> getListEmp(){
         ArrayList<Employe> my_list = new ArrayList<Employe>();
         my_list.add(new Employe(10, "Rakoto", "Jean"));
@@ -60,6 +72,7 @@ public class Employe{
         my_list.add("D3");
         return my_list;
     }
+<<<<<<< HEAD
 
     public int getId() {
         return id;
@@ -79,4 +92,6 @@ public class Employe{
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 }
