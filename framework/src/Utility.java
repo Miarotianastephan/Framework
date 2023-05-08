@@ -1,9 +1,17 @@
 package etu1846.framework;
 
+<<<<<<< HEAD
+// import etu1846.framework.annotation;
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.HashMap;
+<<<<<<< HEAD
+import java.lang.reflect.Field;
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 import java.lang.reflect.Method;
 import etu1846.framework.model.*;
 
@@ -29,6 +37,13 @@ public class Utility {
         System.out.println(MappingUrls);
         mg.checkForAnnotation(path,MappingUrls);
         return MappingUrls;
+    }
+    public Class[] fillClass( ServletContext context) throws Exception{
+        Class[] classes = null;
+        ManageForAnnotation mg = new ManageForAnnotation();
+        String path = context.getRealPath("/WEB-INF/classes/etu1846/framework/model");
+        classes = mg.allClasses(path);
+        return classes;
     }
     // ---
     public void printHash(HashMap<String,Mapping> MappingUrls,PrintWriter out)throws Exception{
@@ -78,4 +93,18 @@ public class Utility {
         return request;
     }
 
+<<<<<<< HEAD
+    // sprint7
+    public void saveAll(HttpServletRequest request, ServletContext context) throws Exception{
+        Class[] classes = fillClass(context);
+        // POUR CHAQUE CLASS
+        for( int i = 0; i < classes.length; i++ ){
+            Class temp_class = classes[i]; 
+            ManageForAnnotation mg = new ManageForAnnotation();
+            mg.traiteSave(temp_class,request);
+        }
+    }
+
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 }

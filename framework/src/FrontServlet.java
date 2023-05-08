@@ -28,8 +28,17 @@ public class FrontServlet extends HttpServlet {
         // </HashMAPPING>
         MappingUrls = ut.get_Annoted_Methods(MappingUrls, context);
         ut.printHash(MappingUrls,out);
+<<<<<<< HEAD
+        
+        //Setting the attribute of each class presenting a name of the attr
+        ut.saveAll(request, context);
+        // ---
+
+        // verify if the url is requesting the view
+=======
 
         // verify the url if requesting the view
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
         if (MappingUrls.get(spath) != null){
             ModelView MV = ut.getModelViewWhenInvoke(MappingUrls,spath);
             if( MV.getUrl() != null ){
@@ -37,6 +46,10 @@ public class FrontServlet extends HttpServlet {
             }
         }
         // fin url redirect to view 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
     }
 
     @Override
