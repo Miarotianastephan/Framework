@@ -5,20 +5,40 @@ import javax.servlet.http.*;
 import javax.servlet.*;
 import java.io.*;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.TreeSet;
-
+import javax.servlet.annotation.MultipartConfig;
 import etu1846.framework.model.*;
+
 
 public class FrontServlet extends HttpServlet {
     //attribut MappingUrls
-    HashMap<String,Mapping> MappingUrls = new HashMap<>();
-    Utility ut = new Utility();
+    HashMap<String,Mapping> MappingUrls;
+    Utility ut;
+    ServletContext context;
+    int count_init = 0;
+
+    @Override
+    public void init(){
+        try{
+            System.out.println("-- INITIALISATION --");
+            ut = new Utility();
+            MappingUrls = new HashMap<>();
+            // load properties from disk, do be used by subsequent doGet() calls
+            context = getServletContext();
+            // </HashMAPPING> avoir toute les methodes annotées            
+            MappingUrls = ut.get_Annoted_Methods(MappingUrls, context);
+            count_init++;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException,Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        ServletContext context = getServletContext();
         
         // Printing results on the servlet
         // </URL>
@@ -26,9 +46,6 @@ public class FrontServlet extends HttpServlet {
         String qpath = ut.printQuery(request);
         out.println("Servlet path "+spath+"</br>");
         out.println("Query String "+qpath+"</br>");
-
-        // </HashMAPPING> avoir toute les methodes annotées
-        MappingUrls = ut.get_Annoted_Methods(MappingUrls, context);
         ut.printHash(MappingUrls,out);
         
         //Setting the attribute of each class presenting a name of the attr
@@ -54,15 +71,19 @@ public class FrontServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        response.setContentType("text/html;charset=UTF-8");
+        try {
+            PrintWriter out = response.getWriter();
+            out.print("VARIABLE "+ request.getParameter("Nom"));
+            out.println("PROCESS POST </br>");
+            processRequest(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
