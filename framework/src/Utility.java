@@ -11,6 +11,16 @@ import java.lang.reflect.Parameter;
 import etu1846.framework.model.*;
 
 public class Utility {
+
+    int count_init = 0;
+
+    public int getCount_init() {
+        return count_init;
+    }
+    public void setCount_init(int count_init) {
+        this.count_init = count_init;
+    }
+
     public String printRequestedPath(HttpServletRequest request)throws ServletException{
         // remove the leading slash
         String reqPath = request.getServletPath();
@@ -90,14 +100,14 @@ public class Utility {
     }
 
     // sprint7
-    public HttpServletRequest saveAll(HttpServletRequest request, ServletContext context) throws Exception{
+    public HttpServletRequest saveAll(HttpServletRequest request, ServletContext context,HashMap<Class,Object> MappingScope) throws Exception{
         Class[] classes = fillClass(context);
         // POUR CHAQUE CLASS
         HttpServletRequest temp_req = null;
+        ManageForAnnotation mg = new ManageForAnnotation();
         for( int i = 0; i < classes.length; i++ ){
             Class temp_class = classes[i]; 
-            ManageForAnnotation mg = new ManageForAnnotation();
-            temp_req = mg.traiteSave(temp_class,request);
+            temp_req = mg.traiteSave(temp_class,request,MappingScope);
         }
         return temp_req;
     }
@@ -132,6 +142,17 @@ public class Utility {
                 }
             }
         }
+    }
+
+    
+    // sprint10
+    public HashMap<Class,Object> initScope(ServletContext context,HashMap<Class,Object> MappingScope)throws Exception {
+        Class[] classes = fillClass(context);
+        ManageForAnnotation mg = new ManageForAnnotation();
+        for( int i=0; i < classes.length; i++){
+            MappingScope = mg.checkScope(classes[i], MappingScope);
+        }
+        return MappingScope;
     }
 
     public void test_ParameterAnnotation(HashMap<String,Mapping> MappingUrls, String value_to_search, HttpServletRequest request) throws Exception {
@@ -173,6 +194,7 @@ public class Utility {
             System.out.println("USP "+usplit[i]);
         }
     }
+
     
 
 }

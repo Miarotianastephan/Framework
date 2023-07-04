@@ -5,19 +5,15 @@
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1"
   metadata-complete="true">
+
+
     <servlet>
       <servlet-name>FrontServlet</servlet-name>
       <servlet-class>etu1846.framework.servlet.FrontServlet</servlet-class>
-      <multipart-config>
-          <max-file-size>100000000</max-file-size>
-          <max-request-size>100000000</max-request-size>
-          <file-size-threshold>0</file-size-threshold>
-      </multipart-config>
     </servlet>
     <servlet-mapping>
         <servlet-name>FrontServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
 
 </web-app>

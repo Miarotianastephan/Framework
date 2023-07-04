@@ -1,9 +1,13 @@
 package etu1846.framework.model;
 
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import etu1846.framework.annotation.*;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
@@ -12,21 +16,31 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.*;
+import javax.xml.ws.handler.MessageContext.Scope;
 import javax.servlet.*;
 import etu1846.framework.*;
 import java.util.HashMap;
-import etu1846.framework.annotation.*;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 
 
 public class ManageForAnnotation {
     ArrayList<Object> listObjet = new ArrayList<Object>();
 
     public ManageForAnnotation(){}
+
+    // Sprint10
+    public HashMap<Class,Object> checkScope(Class ma_Class,HashMap<Class,Object> MappingScope) throws Exception {
+        if( ma_Class.isAnnotationPresent(Scopes.class)){
+            Annotation str = ma_Class.getAnnotation(Scopes.class);
+            Scopes val = (Scopes)str;
+            if( val.scope_val().equalsIgnoreCase("singleton") ){
+                Object maClass_Object = ma_Class.newInstance();
+                MappingScope.put(ma_Class, maClass_Object);
+                System.out.println("Scope Class Is present(" + ma_Class.getSimpleName()+ ")-> Annotation: "+ val.scope_val());      
+            }
+        }
+        return MappingScope;
+    }
 
     public HashMap<String,Mapping> checkForAnnotation(String packageName,HashMap<String,Mapping> MappingUrls) throws Exception{
         ArrayList<String> listClass = new ArrayList<>();
@@ -153,21 +167,21 @@ public class ManageForAnnotation {
     }
     
     // sprint 7
-    public HttpServletRequest traiteSave(Class ma_class,HttpServletRequest request) throws Exception{
-        Object temp_object_of_the_class = ma_class.newInstance();
-        System.out.println("Nom de ma classe :"+temp_object_of_the_class.getClass().getSimpleName());
+    public HttpServletRequest traiteSave(Class ma_class,HttpServletRequest request,HashMap<Class,Object> MappingScope) throws Exception{
+        // Sprint10Test
+        Object temp_object_of_the_class = processObjectInstance(MappingScope,ma_class);
+        // ---
+        System.out.println("Nom de ma classe :"+temp_object_of_the_class.getClass().getName());
             Field[] listfield = ma_class.getDeclaredFields();
             int fields = listfield.length;
             // POUR CHAQUE CHAMP DU CLASS
             for(int j=0; j < fields; j++){
-                System.out.println("FIELD TYPE " + listfield[j].getType().getSimpleName());
                 if(listfield[j].isAnnotationPresent(field.class)){
                     // izay field ihany no alaina ny method aminy 
                     String nameOfAttribute = listfield[j].getAnnotation(field.class).val();
                     // listfield[j].
                     System.out.println("->CHAMP " + listfield[j].getName()+ "___> Annotation: "+ nameOfAttribute);
-                    String valueOfAttribute = (String)request.getParameter(nameOfAttribute.trim());
-                    // System.out.println("");
+                    String valueOfAttribute = request.getParameter(nameOfAttribute);
                     if( valueOfAttribute != null){
                         // setting the attribute
                         String methodToCall = "set".concat(nameOfAttribute);
@@ -223,8 +237,10 @@ public class ManageForAnnotation {
     public void verifyAnnotationParams(HashMap<String,Mapping> MappingUrls, String value_to_search, HttpServletRequest request)throws Exception {
         if (MappingUrls.get(value_to_search) != null){
             Mapping map = MappingUrls.get(value_to_search);
+            
             Object obj = new Object();
             obj = Class.forName(map.getClassName()).newInstance();
+
             Method[] all_method = obj.getClass().getMethods();
             for( int i = 0; i < all_method.length; i++){
                 if( all_method[i].getName().equalsIgnoreCase(map.getMethod())){
@@ -261,5 +277,41 @@ public class ManageForAnnotation {
                 }
             }
         }
+    }
+
+    // Sprint10 verification du disponibilité du singleton 
+    public boolean verifySingleton(HashMap<Class,Object> MappignScope, Class ma_class){
+        if( MappignScope.get(ma_class) != null ){
+            return true;
+        }
+        return false;
+    }
+
+    public Object processObjectInstance(HashMap<Class,Object> MappingScope, Class ma_class) throws Exception{
+        Object instance = null;
+        if( verifySingleton(MappingScope,ma_class) == true ){//Si la class est une singleton
+            System.out.println("--SCOPE Class present");
+            instance = MappingScope.get(ma_class);
+            Method MethodGet = instance.getClass().getDeclaredMethod("getCountAppel");           
+            Method MethodSet = instance.getClass().getDeclaredMethod("setCountAppel", int.class);
+            int countAppel = (int)MethodGet.invoke(instance);
+            countAppel++;
+            MethodSet.invoke(instance,countAppel);
+            System.out.println("COUNT "+countAppel);            
+            
+        }else{
+            instance = ma_class.newInstance();//Sinon nouvelle instance
+            System.out.println("--DEFAULT class" + instance.getClass().getSimpleName());
+            Method MethodGet = instance.getClass().getDeclaredMethod("getCountAppel");    
+            int countAppel = (int)MethodGet.invoke(instance);
+            Method MethodSet = instance.getClass().getDeclaredMethod("setCountAppel", int.class);
+            MethodSet.invoke(instance,1);
+            System.out.println("COUNT "+countAppel);
+        }
+        return instance;
+    }
+    public void resetChamp(Class ma_class){
+        Fields[] allFields = ma_class.getDeclaredFields();
+        
     }
 }
