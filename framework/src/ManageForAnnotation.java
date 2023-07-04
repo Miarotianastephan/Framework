@@ -1,7 +1,9 @@
 package etu1846.framework.model;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
@@ -153,17 +155,19 @@ public class ManageForAnnotation {
     // sprint 7
     public HttpServletRequest traiteSave(Class ma_class,HttpServletRequest request) throws Exception{
         Object temp_object_of_the_class = ma_class.newInstance();
-        System.out.println("Nom de ma classe :"+temp_object_of_the_class.getClass().getName());
+        System.out.println("Nom de ma classe :"+temp_object_of_the_class.getClass().getSimpleName());
             Field[] listfield = ma_class.getDeclaredFields();
             int fields = listfield.length;
             // POUR CHAQUE CHAMP DU CLASS
             for(int j=0; j < fields; j++){
+                System.out.println("FIELD TYPE " + listfield[j].getType().getSimpleName());
                 if(listfield[j].isAnnotationPresent(field.class)){
                     // izay field ihany no alaina ny method aminy 
                     String nameOfAttribute = listfield[j].getAnnotation(field.class).val();
                     // listfield[j].
                     System.out.println("->CHAMP " + listfield[j].getName()+ "___> Annotation: "+ nameOfAttribute);
-                    String valueOfAttribute = request.getParameter(nameOfAttribute);
+                    String valueOfAttribute = (String)request.getParameter(nameOfAttribute.trim());
+                    // System.out.println("");
                     if( valueOfAttribute != null){
                         // setting the attribute
                         String methodToCall = "set".concat(nameOfAttribute);
@@ -175,8 +179,44 @@ public class ManageForAnnotation {
                     }
                     // ---
                 }
+                if(listfield[j].getType().equals(FileUpload.class)){
+                    if(request.getPart("file") != null){        
+                        // Get the uploaded file
+                        Part filePart = request.getPart("file");
+                        String fileName = filePart.getSubmittedFileName();
+
+                        // // Save the file to a desired location
+                        String uploadPath = "C:\\IT_WORK\\work_ITU\\work_UE\\UE_S4\\Sprint9\\upload_file\\" + fileName;
+                        InputStream fileContent = filePart.getInputStream();
+                        filePart.write(uploadPath);
+                        
+                        // Get the bytes from the file 
+                        byte[] bytes = this.readBytesFromInputStream(fileContent);
+
+                        // Create the FileUpload instance
+                        FileUpload fileUpload = new FileUpload(fileName , uploadPath , bytes);
+
+                        // setting the attribute
+                        String methodToCall = "set".concat(listfield[j].getName());
+                        Method meth = temp_object_of_the_class.getClass().getDeclaredMethod(methodToCall , listfield[j].getType());
+                        meth.invoke(temp_object_of_the_class , fileUpload);
+                        System.out.println("File Upload in CLASS " + ma_class.getName() + " has been OKE "+listfield[j].getName());
+                    }
+                }
             }
             return request;
+    }
+
+    // sprint9
+    // fonction pour avoir le file en tableau de byte
+    private byte[] readBytesFromInputStream(InputStream inputStream) throws IOException {
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
+        return output.toByteArray();
     }
 
     // sprint8
