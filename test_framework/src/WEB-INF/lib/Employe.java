@@ -9,7 +9,11 @@ public class Employe{
     @field(val = "Nom") String nom;
     @field(val = "Prenom") String prenom;
 
-    public Employe(int id, String nom, String prenom){}
+    public Employe(int idt, String enom, String eprenom){
+        id = idt;
+        nom = enom;
+        prenom = eprenom;
+    }
     public Employe(){};
 
     @Url(url_name = "find_all")
@@ -20,7 +24,6 @@ public class Employe{
     @Url(url_name = "go_view_test_url")
     public ModelView m_view_emp(){
         System.out.println("You get the method with model view test");
-<<<<<<< HEAD
         ArrayList<Employe> my_list_emp = this.getListEmp();
         ModelView m_view = new ModelView("test_url.jsp");
         for (int i=0; i < my_list_emp.size(); i++) {
@@ -28,14 +31,6 @@ public class Employe{
             String temp_key = "empno".concat(Integer.toString(temp_emp.getId()));
             System.out.println("Key"+temp_key);
             m_view.addItem(temp_key, temp_emp);
-=======
-        ArrayList<String> my_list = this.getDataEmp();
-        ModelView m_view = new ModelView("test_url.jsp");
-        for (int i=0; i < my_list.size(); i++) {
-            String temp_key = "empno".concat(my_list.get(i));
-            System.out.println("Key"+temp_key);
-            m_view.addItem(temp_key, my_list.get(i));
->>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
         }
         return m_view;
     }
@@ -47,21 +42,31 @@ public class Employe{
         return m_view;
     }
 
-<<<<<<< HEAD
     @Url(url_name = "sender")
     public ModelView m_view_sender(){
         System.out.println("You get the method with model view sender");
+        ArrayList<Employe> my_list_emp = this.getListEmp();
         ModelView m_view = new ModelView("sender.jsp");
+        for (int i=0; i < my_list_emp.size(); i++) {
+            Employe temp_emp = my_list_emp.get(i);
+            String temp_key = "empno".concat(Integer.toString(temp_emp.getId()));
+            System.out.println("EmpNom: "+temp_emp.getNom());
+            System.out.println("Key"+temp_key);
+            m_view.addItem(temp_key, temp_emp);
+        }
         return m_view;
     }
 
-=======
->>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
     public ArrayList<Employe> getListEmp(){
         ArrayList<Employe> my_list = new ArrayList<Employe>();
-        my_list.add(new Employe(10, "Rakoto", "Jean"));
-        my_list.add(new Employe(12, "Rabe", "Nary"));
-        my_list.add(new Employe(14, "Ramanantsoa", "Miarotiana"));
+        Employe E1 = new Employe(10, "Rakoto", "Jean");
+        Employe E2 = new Employe(12, "Rabe", "Nary");
+        Employe E3 = new Employe(14, "Ramanantsoa", "Miarotiana");
+
+        my_list.add(E1);
+        my_list.add(E2);
+        my_list.add(E3);
+
         return my_list;
     }
 
@@ -72,7 +77,29 @@ public class Employe{
         my_list.add("D3");
         return my_list;
     }
-<<<<<<< HEAD
+
+    // sprint8
+    @Url(url_name = "set_Emp__id")
+    public void setEmpId(@ParamValue(paramvalue = "id") int id){
+        Employe emp  = new Employe();
+        emp.setId(id);
+        System.out.println("Vous avez modifier l'identifiant "+ emp.getId());
+    } 
+    
+    @Url(url_name = "set_Emp__id__nom__prenom")
+    public void setEmpId(@ParamValue(paramvalue = "id") int id, @ParamValue(paramvalue = "nom") String nom, @ParamValue(paramvalue = "prenom") String prenom){
+        Employe emp  = new Employe(id,nom,prenom);
+        System.out.println("Vous avez ajouter une personne: ");
+        System.out.println(emp.getId()+" "+emp.getNom()+" "+emp.getPrenom());
+    } 
+
+    @Url(url_name = "set_Emp__idbo__nom__prenom")
+    public void setEmpId(Boolean id, String nom, String prenom){
+        // Employe emp  = new Employe(id,nom,prenom);
+        System.out.println("Vous avez ajouter une personne: ");
+        // System.out.println(emp.getId()+" "+emp.getNom()+" "+emp.getPrenom());
+    } 
+    // fin sprint8
 
     public int getId() {
         return id;
@@ -92,6 +119,4 @@ public class Employe{
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
-=======
->>>>>>> 5a41ce39a5cbdebf708f09e70021e66ec8668f15
 }

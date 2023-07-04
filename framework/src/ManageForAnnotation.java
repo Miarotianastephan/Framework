@@ -14,8 +14,11 @@ import javax.servlet.*;
 import etu1846.framework.*;
 import java.util.HashMap;
 import etu1846.framework.annotation.*;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 
 public class ManageForAnnotation {
@@ -147,7 +150,8 @@ public class ManageForAnnotation {
         return classes;
     }
     
-    public void traiteSave(Class ma_class,HttpServletRequest request) throws Exception{
+    // sprint 7
+    public HttpServletRequest traiteSave(Class ma_class,HttpServletRequest request) throws Exception{
         Object temp_object_of_the_class = ma_class.newInstance();
         System.out.println("Nom de ma classe :"+temp_object_of_the_class.getClass().getName());
             Field[] listfield = ma_class.getDeclaredFields();
@@ -157,6 +161,7 @@ public class ManageForAnnotation {
                 if(listfield[j].isAnnotationPresent(field.class)){
                     // izay field ihany no alaina ny method aminy 
                     String nameOfAttribute = listfield[j].getAnnotation(field.class).val();
+                    // listfield[j].
                     System.out.println("->CHAMP " + listfield[j].getName()+ "___> Annotation: "+ nameOfAttribute);
                     String valueOfAttribute = request.getParameter(nameOfAttribute);
                     if( valueOfAttribute != null){
@@ -171,5 +176,50 @@ public class ManageForAnnotation {
                     // ---
                 }
             }
+            return request;
+    }
+
+    // sprint8
+    public void verifyAnnotationParams(HashMap<String,Mapping> MappingUrls, String value_to_search, HttpServletRequest request)throws Exception {
+        if (MappingUrls.get(value_to_search) != null){
+            Mapping map = MappingUrls.get(value_to_search);
+            Object obj = new Object();
+            obj = Class.forName(map.getClassName()).newInstance();
+            Method[] all_method = obj.getClass().getMethods();
+            for( int i = 0; i < all_method.length; i++){
+                if( all_method[i].getName().equalsIgnoreCase(map.getMethod())){
+                    if( all_method[i].getAnnotation(Url.class).url_name().equalsIgnoreCase(value_to_search) == true ){
+                        Method meth = all_method[i];
+                        Parameter[] params = meth.getParameters();
+                        Object[] param_val = new Object[params.length];
+                        int param_count = 0;
+                        // Verification si le nombres de parametres du methode est egales au nombre de valeur
+                        // if( params.length == count_values ){
+                        for (Parameter parameter : params) {
+                            String parameterName = parameter.getName();
+                            Class<?> parameterType = parameter.getType();
+                            if(parameter.isAnnotationPresent(ParamValue.class)){
+                                String type_param = parameterType.getSimpleName();
+                                String temp_paramName = parameter.getAnnotation(ParamValue.class).paramvalue();
+                                if( request.getParameter(temp_paramName) != null && request.getParameter(temp_paramName) != ""){
+                                    if( type_param.equalsIgnoreCase("int") ){
+                                        param_val[param_count] = Integer.parseInt(request.getParameter(temp_paramName));
+                                    }                                    
+                                    if( type_param.equalsIgnoreCase("double") ){
+                                        param_val[param_count] = Double.valueOf(request.getParameter(temp_paramName));
+                                    }
+                                    if( type_param.equalsIgnoreCase("string") ){
+                                        param_val[param_count] = (request.getParameter(temp_paramName));
+                                    }
+                                    System.out.println("PARAM :"+temp_paramName);
+                                }
+                                param_count++;
+                            }
+                        }
+                        meth.invoke(obj, param_val);
+                    }
+                }
+            }
+        }
     }
 }
