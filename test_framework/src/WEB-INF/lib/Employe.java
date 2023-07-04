@@ -1,30 +1,31 @@
 package etu1846.framework.model;
 import java.util.ArrayList;
-import etu1846.framework.FileUpload;
 
 import etu1846.framework.annotation.*;
 
+@Scopes(scope_val = "default")
 @Model(nomtable = "emp")
 public class Employe{
+    
+    int countAppel;
     int id;
     @field(val = "Nom") String nom;
     @field(val = "Prenom") String prenom;
-    FileUpload FileUpload;
+
+    public int getCountAppel() {
+        return countAppel;
+    }
+
+    public void setCountAppel(int countAppel) {
+        this.countAppel = countAppel;
+    }
+
     public Employe(int idt, String enom, String eprenom){
         id = idt;
         nom = enom;
         prenom = eprenom;
     }
-
     public Employe(){};
-    
-
-    public FileUpload getFileUpload() {
-        return FileUpload;
-    }
-    public void setFileUpload(FileUpload fileUpload) {
-        this.FileUpload = fileUpload;
-    }
 
     @Url(url_name = "find_all")
     public void find_emp(){
@@ -95,6 +96,7 @@ public class Employe{
         emp.setId(id);
         System.out.println("Vous avez modifier l'identifiant "+ emp.getId());
     } 
+    
     @Url(url_name = "set_Emp__id__nom__prenom")
     public void setEmpId(@ParamValue(paramvalue = "id") int id, @ParamValue(paramvalue = "nom") String nom, @ParamValue(paramvalue = "prenom") String prenom){
         Employe emp  = new Employe(id,nom,prenom);

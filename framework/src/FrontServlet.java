@@ -5,17 +5,15 @@ import javax.servlet.http.*;
 import javax.servlet.*;
 import java.io.*;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.TreeSet;
-import javax.servlet.annotation.MultipartConfig;
-import etu1846.framework.model.*;
 
+import etu1846.framework.model.*;
 
 public class FrontServlet extends HttpServlet {
     //attribut MappingUrls
     HashMap<String,Mapping> MappingUrls;
+    HashMap<Class,Object> MappingScope; // Sprint10 new Attribute 
     Utility ut;
     ServletContext context;
     int count_init = 0;
@@ -26,10 +24,13 @@ public class FrontServlet extends HttpServlet {
             System.out.println("-- INITIALISATION --");
             ut = new Utility();
             MappingUrls = new HashMap<>();
+            MappingScope = new HashMap<>();
             // load properties from disk, do be used by subsequent doGet() calls
             context = getServletContext();
             // </HashMAPPING> avoir toute les methodes annotées            
             MappingUrls = ut.get_Annoted_Methods(MappingUrls, context);
+            // recherche des scopes 
+            MappingScope = ut.initScope(context,MappingScope);
             count_init++;
         }catch(Exception e){
             e.printStackTrace();
@@ -45,17 +46,16 @@ public class FrontServlet extends HttpServlet {
         String spath = ut.printRequestedPath(request);
         String qpath = ut.printQuery(request);
         out.println("Servlet path "+spath+"</br>");
-        out.println("Query String "+qpath+"</br>");
+        out.println("Query String "+qpath+"</br>");        
+        out.println("Count Times init() "+count_init+"</br>");
         ut.printHash(MappingUrls,out);
-        
         //Setting the attribute of each class presenting a name of the attr
-        request = ut.saveAll(request, context);
+        request = ut.saveAll(request, context, MappingScope);
         if( ut.checkPassifFunction(MappingUrls,spath) == true ){
             ut.checkParams(MappingUrls, spath);
             ut.test_ParameterAnnotation(MappingUrls, spath, request);
         }
         // ---
-
         // verify if the url is requesting the view
         if( ut.checkPassifFunction(MappingUrls,spath) == false ){
             if (MappingUrls.get(spath) != null){
@@ -66,12 +66,11 @@ public class FrontServlet extends HttpServlet {
             }
         }
         // fin url redirect to view 
-
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+            processRequest(request, response);
     }
 
     @Override
